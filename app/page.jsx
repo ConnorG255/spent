@@ -1,9 +1,8 @@
-
 "use client";
 
 import OpenAI from "openai";
 import { useState } from "react";
-import {items} from "../components/item.tsx";
+//import {Items} from "../components/items.jsx";
 
 
 
@@ -15,7 +14,7 @@ const openai = new OpenAI({
 
 
 export default function Home() {
-
+  const [finished, setfinished] = useState([]);
   const [input, setinput] = useState("");
   const [response, setresponse] = useState("");
 
@@ -41,11 +40,13 @@ export default function Home() {
       + input
      }],
     });
-   //setresponse(completion.choices[0]?.message?.content);
-    const finishedresponse = [completion.choices[0]?.message?.content];
-    for(var i = 0; i<finishedresponse.length; i++){
-      items(finishedresponse[i]);
-    }
+   
+
+    const ogitems = completion.choices[0]?.message?.content.split(',"').map((item) => item.replace(/(^"|"$)/g, ""));
+    setfinished(ogitems);
+   // console.log(response);
+   // console.log(finished);
+   
   }
   
   
@@ -58,21 +59,23 @@ export default function Home() {
       <div className="0">
       
       <form onSubmit={handleSubmit}>
-        <textarea
-          value={input}
+        <textarea value={input}
           onChange={handleInputChange}
           placeholder="Budget"
-          className="bg-slate-900 w-max"
-          type='text'
+          className="bg-slate-900 w-max" 
         />
         <br />
         <button type="submit" className=" p-2 bg-slate-700 focus: bg-slate-600">
           send</button>
       </form>
-      <div className=" top-9">
-        <h2>response:</h2>
-        <p>{response}</p>
-      </div>
+      
+      
+      <div className="flex flex-col gap-2 pt-2 w-full h-full bg-red-600 text-white">
+      {finished.map((itema, index) => (
+        <div key={index}
+        className="text-white p-5 bg-slate-700"> {itema} </div>
+      ))}
+        </div>
     </div>
 
     </div>
